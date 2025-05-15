@@ -1,4 +1,4 @@
-import db from './db';
+//import db from './db';
 
 const getError = (err) =>
   err.response && err.response.data && err.response.data.message
