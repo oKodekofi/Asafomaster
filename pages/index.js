@@ -1,7 +1,6 @@
 //import NextLink from 'next/link';
-import React from 'react';
-import Image from 'next/image';
-import { Grid, Link, Typography } from '@mui/material';
+//import Image from 'next/image';
+import { Grid, Typography } from '@mui/material';
 import Layout from '../components/Layout';
 import db from '../utils/db';
 import Product from '../models/Product';
@@ -10,7 +9,8 @@ import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { Store } from '../utils/Store';
 import ProductItem from '../components/ProductItem';
-import { Carousel } from 'react-responsive-carousel';
+import DynamicCarousel from '../components/ClientOnlyCarousel';
+
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 //import classes from '../utils/classes';
 
@@ -31,37 +31,16 @@ export default function Home(props) {
   };
   return (
     <Layout>
-      <Carousel showThumbs={false} autoPlay>
-        {featuredProducts.map((product) => (
-          <div key={product._id}>
-            <Link href={`/product/${product.slug}`} passHref className="flex">
-              {product.image ? (
-                <Image
-                  src={
-                    product.image.includes('res.cloudinary.com')
-                      ? product.image
-                      : `https://res.cloudinary.com/diqaci6rs/image/upload/${product.image}`
-                  }
-                  alt={product.name}
-                  width={500}
-                  height={500}
-                  sizes="(max-width: 768px) 100vw, 500px"
-                  onError={(e) =>
-                    console.error(`Image failed to load: ${product.image}`, e)
-                  }
-                />
-              ) : (
-                <p className="text-red-500">Image not available</p>
-              )}
-            </Link>
-          </div>
-        ))}
-      </Carousel>
+      {/* ✅ Carousel (client-only) */}
+      <DynamicCarousel featuredProducts={featuredProducts} />
 
-      <Typography variant="h2">Popular Products 1</Typography>
+      {/* Popular products section */}
+      <Typography variant="h2" component="h2" className="my-4">
+        Popular Products
+      </Typography>
       <Grid container spacing={3}>
         {topRatedProducts.map((product) => (
-          <Grid item md={4} key={product.name}>
+          <Grid item md={4} key={product._id}>
             <ProductItem
               product={product}
               addToCartHandler={addToCartHandler}
@@ -72,7 +51,6 @@ export default function Home(props) {
     </Layout>
   );
 }
-
 export async function getServerSideProps() {
   try {
     await db.connect();

@@ -9,20 +9,22 @@ async function connect() {
 
   if (mongoose.connections.length > 0) {
     connection.isConnected = mongoose.connections[0].readyState;
-
     if (connection.isConnected === 1) {
       return;
     }
-
     await mongoose.disconnect();
   }
 
-  const db = await mongoose.connect(process.env.MONGODB_URI);
+  const db = await mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
   connection.isConnected = db.connections[0].readyState;
 }
 
 async function disconnect() {
-  if (process.env.NODE_ENV === 'production') {
+  if (connection.isConnected && process.env.NODE_ENV === 'production') {
     await mongoose.disconnect();
     connection.isConnected = false;
   }
@@ -35,4 +37,5 @@ function convertDocToObj(doc) {
   return doc;
 }
 
-export default { connect, disconnect, convertDocToObj };
+const db = { connect, disconnect, convertDocToObj };
+export default db;
