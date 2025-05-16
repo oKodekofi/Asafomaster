@@ -52,7 +52,7 @@ function reducer(state, action) {
   }
 }
 
-function AdminProdcuts() {
+function AdminProducts() {
   const { state } = useContext(Store);
   const router = useRouter();
 
@@ -247,4 +247,4 @@ function AdminProdcuts() {
   );
 }
 
-export default dynamic(() => Promise.resolve(AdminProdcuts), { ssr: false });
+export default dynamic(() => Promise.resolve(AdminProducts), { ssr: false });

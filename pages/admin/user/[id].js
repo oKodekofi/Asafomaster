@@ -19,10 +19,9 @@ import {
 import { getError } from '../../../utils/error';
 import { Store } from '../../../utils/Store';
 import Layout from '../../../components/Layout';
+import useStyles from '../../../utils/styles';
 import { Controller, useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
-import Form from '../../../components/Form';
-import classes from '../../../utils/classes';
 
 function reducer(state, action) {
   switch (action.type) {
@@ -70,7 +69,7 @@ function UserEdit({ params }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const router = useRouter();
-
+  const classes = useStyles();
   const { userInfo } = state;
 
   useEffect(() => {
@@ -92,7 +91,7 @@ function UserEdit({ params }) {
       };
       fetchData();
     }
-  }, [userInfo, router, userId, setValue, enqueueSnackbar]);
+  }, []);
 
   const submitHandler = async ({ name }) => {
     closeSnackbar();
@@ -118,7 +117,7 @@ function UserEdit({ params }) {
     <Layout title={`Edit User ${userId}`}>
       <Grid container spacing={1}>
         <Grid item md={3} xs={12}>
-          <Card sx={classes.section}>
+          <Card className={classes.section}>
             <List>
               <NextLink href="/admin/dashboard" passHref>
                 <ListItem button component="a">
@@ -144,7 +143,7 @@ function UserEdit({ params }) {
           </Card>
         </Grid>
         <Grid item md={9} xs={12}>
-          <Card sx={classes.section}>
+          <Card className={classes.section}>
             <List>
               <ListItem>
                 <Typography component="h1" variant="h1">
@@ -153,10 +152,15 @@ function UserEdit({ params }) {
               </ListItem>
               <ListItem>
                 {loading && <CircularProgress></CircularProgress>}
-                {error && <Typography sx={classes.error}>{error}</Typography>}
+                {error && (
+                  <Typography className={classes.error}>{error}</Typography>
+                )}
               </ListItem>
               <ListItem>
-                <Form onSubmit={handleSubmit(submitHandler)}>
+                <form
+                  onSubmit={handleSubmit(submitHandler)}
+                  className={classes.form}
+                >
                   <List>
                     <ListItem>
                       <Controller
@@ -203,7 +207,7 @@ function UserEdit({ params }) {
                       {loadingUpdate && <CircularProgress />}
                     </ListItem>
                   </List>
-                </Form>
+                </form>
               </ListItem>
             </List>
           </Card>
